@@ -1,0 +1,61 @@
+{
+  "entities": {
+    "Report": {
+      "title": "Anonymous Report",
+      "description": "A report submitted by a student about school violence.",
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string",
+          "description": "The detailed content of the report."
+        },
+        "location": {
+          "type": "string",
+          "description": "Where the incident occurred."
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the report was submitted."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "reviewed", "resolved"],
+          "description": "The current status of the report."
+        }
+      },
+      "required": ["content", "timestamp", "status"]
+    },
+    "SafetyMessage": {
+      "title": "Safety Message",
+      "description": "A message or tip about school safety and culture.",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "author": {
+          "type": "string"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["title", "content", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/reports/{reportId}": {
+      "schema": "Report",
+      "description": "Collection of anonymous reports."
+    },
+    "/safety_messages/{messageId}": {
+      "schema": "SafetyMessage",
+      "description": "Collection of safety messages and tips."
+    }
+  }
+}

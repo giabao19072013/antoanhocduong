@@ -1,0 +1,33 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && 
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+         request.auth.token.email == "nguyenbao22013@gmail.com" ||
+         request.auth.token.email == "nguyenbao42013@gmail.com");
+    }
+
+    // Reports: Anyone can create (anonymous), only admins can read
+    match /reports/{reportId} {
+      allow create: if true; // Anonymous reporting allowed
+      allow read, update, delete: if isAdmin();
+    }
+
+    // Safety Messages: Anyone can read, only admins can write
+    match /safety_messages/{messageId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Users: Users can read/write their own profile
+    match /users/{userId} {
+      allow read, write: if isAuthenticated() && request.auth.uid == userId;
+    }
+  }
+}
